@@ -3,8 +3,9 @@ const User = require('../models/user');
 
 const router = express.Router();
 
-router.get('/', (req, res) => {
-    res.json({ message: "Welcome" });
+router.get('/users', async (req, res) => {
+    const data = await User.find();
+    return res.status(200).send({ data });
 });
 
 router.post('/login', (req, res) => {
@@ -15,12 +16,20 @@ router.post('/login', (req, res) => {
     res.status(401).end();
 });
 
-router.post('/register', async (req, res) => {
+router.post('/register', async (req, res) => {  
     try {
-        const user = await User.create(req.body);
-        return res.send({ user });
+        const { email} = req.body;
+
+        let existingUser = await User.findOne({ email });
+        if (existingUser) {
+            return res.status(400).send({ message: "User already registered." });
+        }
+
+        const newUser = await User.create(req.body);
+        return res.send({ newUser });
+
     } catch (e) {
-        return res.status(400).send({ message: "Register Failed", error: e});
+        return res.status(400).json({ message: "Register Failed", error: e});
     }
 });
 
