@@ -2,14 +2,15 @@ const express = require('express');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
+const verifyJWT = require('../middlewares/auth');
 const SECRET = require('../config/secret');
 const User = require('../models/user');
 
 const router = express.Router();
 
-router.get('/users', async (req, res) => {
+router.get('/users', verifyJWT, async (req, res) => {
     const data = await User.find();
-    return res.status(200).send({ data });
+    return res.status(200).send({ data, userId: req.userId });
 });
 
 router.post('/register', async (req, res) => {  
