@@ -2,6 +2,7 @@ const express = require('express');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
+const path = require('path');
 
 const verifyJWT = require('../middlewares/auth');
 const User = require('../models/user');
@@ -78,7 +79,8 @@ router.post('/password/forgot', async (req, res) => {
             to: email,
             from: 'admin@admin.com.br',
             subject: 'Recuperação de Senha',
-            html: `<p>Esqueceu a senha? Não se preocupe! Utilize esse Token para recuperá-la: ${hash}</p>`
+            template: 'forgot-password',
+            context: { hash }
         };
 
         mailer.sendMail(mailInfo, (err) => {
