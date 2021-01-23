@@ -2,19 +2,12 @@ const express = require('express');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
-const path = require('path');
 
-const verifyJWT = require('../middlewares/auth');
 const User = require('../models/user');
 const mailer = require('../helpers/mailer');
 const { SECRET } = require('../../config/auth.json');
 
 const router = express.Router();
-
-router.get('/users', verifyJWT, async (req, res) => {
-    const data = await User.find();
-    return res.status(200).send({ data, userId: req.userId });
-});
 
 router.post('/register', async (req, res) => {  
     try {
@@ -124,4 +117,4 @@ router.post('/password/reset', async (req, res) => {
     }
 });
 
-module.exports = app => app.use('/auth', router);
+module.exports = app => app.use('/user', router);
